@@ -1,3 +1,4 @@
+/*jshint -W072 */
 (function() {
   'use strict';
   var module = angular.module('ngGeolocator', ['ngGeolocatorConstants']);
@@ -5,7 +6,8 @@
   /**
    * @constructor
    * @param {google.maps.Marker} marker - The marker on the map that indicates the user's location
-   * @param {Promise} readyPromise      - Promise that will be resolved when the marker is ready to be queried for the user's location
+   * @param {Promise} readyPromise      - Promise that will be resolved when the marker is ready
+   *                                    to be queried for the user's location.
    */
   function Locator(marker, readyPromise) {
     this.marker = marker;
@@ -22,6 +24,7 @@
   module.factory('ngGeolocator', ['$window', '$q', '$timeout', 'geolocationIndicator',
     function($window, $q, $timeout, geolocationIndicator) {
       var mapsAPIPromise, geolocationPromise;
+
       function loadMap(canvasID, key) {
         if (!mapsAPIPromise) {
           var mapsDefer = $q.defer();
@@ -35,13 +38,14 @@
           $window.googleMapsInitialized = mapsDefer.resolve;
           $window.document.body.appendChild(script);
         }
-        return mapsAPIPromise.then(function(){
+        return mapsAPIPromise.then(function() {
           var map = initMap(canvasID);
           var locatorMarker = initLocatorMarker(map);
           var readyPromise = centerOnUsersLocation(map, locatorMarker);
           return new Locator(locatorMarker, readyPromise);
         });
       }
+
       function handleNoGeolocation(map, errorFlag) {
         var content;
         if (errorFlag) {
@@ -51,16 +55,17 @@
         }
 
         var options = {
-          map: map,
           position: new $window.google.maps.LatLng(60, 105),
           content: content,
         };
 
         var infowindow = new $window.google.maps.InfoWindow(options);
+        infowindow.setMap(map);
         map.setCenter(options.position);
       }
+
       function centerOnUsersLocation(map, locatorMarker) {
-        if(!$window.navigator.geolocation) {
+        if (!$window.navigator.geolocation) {
           handleNoGeolocation(map, false);
           return $q.reject('Geolocation service not supported.');
         }
@@ -68,7 +73,7 @@
           var geolocationDefer = $q.defer();
           geolocationPromise = geolocationDefer.promise;
           $window.navigator.geolocation.getCurrentPosition(geolocationDefer.resolve, geolocationDefer.reject);
-          var timeoutPromise = $timeout(function(){
+          var timeoutPromise = $timeout(function() {
             geolocationDefer.reject('Timed out');
           }, 10000);
           geolocationPromise.then(function() {
@@ -83,17 +88,17 @@
             draggable: false,
             flat: true,
             icon: {
-                url: geolocationIndicator,
-                size: new $window.google.maps.Size(34, 34),
-                scaledSize: new $window.google.maps.Size(17, 17),
-                origin: new $window.google.maps.Point(0, 0),
-                anchor: new $window.google.maps.Point(8, 8)
+              url: geolocationIndicator,
+              size: new $window.google.maps.Size(34, 34),
+              scaledSize: new $window.google.maps.Size(17, 17),
+              origin: new $window.google.maps.Point(0, 0),
+              anchor: new $window.google.maps.Point(8, 8)
             },
             title: 'Current location',
             zIndex: 2,
             position: pos,
-            map: map,
           });
+          marker.setMap(map);
           var circle = new $window.google.maps.Circle({
             clickable: false,
             radius: position.coords.accuracy,
@@ -104,8 +109,8 @@
             strokeWeight: 1,
             zIndex: 1,
             center: pos,
-            map: map,
           });
+          circle.setMap(map);
           locatorMarker.setPosition(pos);
 
           map.setCenter(pos);
@@ -114,12 +119,14 @@
           return $q.reject('Geolocation service failed.');
         });
       }
+
       function initMap(canvasID) {
         var mapOptions = {
           zoom: 17,
         };
         return new $window.google.maps.Map($window.document.getElementById(canvasID), mapOptions);
       }
+
       function initLocatorMarker(map) {
         return new $window.google.maps.Marker({
           draggable: true,
