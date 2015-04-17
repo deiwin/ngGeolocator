@@ -6,7 +6,8 @@ angular.module('geolocator', ['ngGeolocator'])
         scope: {},
         link: function($scope, $element, $attrs) {
           var locator;
-          var locatorPromise = ngGeolocator.loadMap('map-canvas', googleMapsAPIKey);
+          // var locatorPromise = ngGeolocator.loadMap('map-canvas', googleMapsAPIKey);
+          var locatorPromise = ngGeolocator.loadMap('map-canvas');
           $scope.ready = false;
           $scope.confirmLocation = function() {
             var location = locator.getLocation();
@@ -22,7 +23,7 @@ angular.module('geolocator', ['ngGeolocator'])
           });
         },
         restrict: 'E',
-        templateUrl: 'demo/geolocator.template.html'
+        templateUrl: 'demo/lib/geolocator.template.html'
       };
     }
   ]);

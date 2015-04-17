@@ -2,15 +2,56 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>ngGeolocator</title>
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+  <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+  <!--[if lt IE 9]>
+  <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+
   <link rel="stylesheet" type="text/css" href="demo/style.css" />
   <link rel="stylesheet" type="text/css" href="dist/ng-geolocator.css" />
+  <title>deiwin/ngGeolocator</title>
 </head>
-<body>
-  <geolocator></geolocator>
 
-  <script type="text/javascript" src="bower_components/angular/angular.js"></script>
-  <script type="text/javascript" src="dist/ng-geolocator.js"></script>
-  <script type="text/javascript" src="demo/app.js"></script>
+<body>
+  <header>
+    <div class="inner">
+      <h1>ngGeolocator</h1>
+      <h2>Let the user tell you where they are with the aid of HTML5 Geolocation API and Google Maps</h2>
+      <a href="https://github.com/deiwin/ngGeolocator" class="button"><small>View project on</small> GitHub</a>
+    </div>
+  </header>
+
+  <div id="content-wrapper">
+    <div class="inner clearfix">
+      <section id="main-content">
+        <geolocator></geolocator>
+
+        <script type="text/javascript" src="bower_components/angular/angular.js"></script>
+        <script type="text/javascript" src="dist/ng-geolocator.js"></script>
+        <script type="text/javascript" src="demo/lib/app.js"></script>
+      </section>
+
+      <aside id="sidebar">
+        <a href="https://github.com/deiwin/ngGeolocator/archive/master.zip" class="button">
+          <small>Download</small>
+          .zip file
+        </a>
+        <a href="https://github.com/deiwin/ngGeolocator/archive/master.tar.gz" class="button">
+          <small>Download</small>
+          .tar.gz file
+        </a>
+
+        <p class="repo-owner"><a href="https://github.com/deiwin/ngGeolocator">ngGeolocator</a> is maintained by <a href="https://github.com/deiwin">Deiwin Sarjas</a>.</p>
+
+        <p>This page uses the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+      </aside>
+    </div>
+  </div>
 </body>
 </html>
