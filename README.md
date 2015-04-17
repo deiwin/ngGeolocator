@@ -7,6 +7,8 @@ ngGeolocator
 
 Let the user tell you where they are with the aid of HTML5 Geolocation API and Google Maps.
 
+A live demo: http://deiwin.github.io/ngGeolocator/
+
 Installation
 ----------
 
