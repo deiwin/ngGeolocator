@@ -1,5 +1,10 @@
-<div id="map-canvas" ng-hide="locatorError">
-</div>
-<div class="error" ng-show="locatorError">
-  {{locatorError}}
+<div class="wrapper">
+  <div id="map-canvas" ng-hide="locatorError">
+  </div>
+  <div class="error" ng-show="locatorError">
+    {{locatorError}}
+  </div>
+  <button type="button" ng-click="confirmLocation()" ng-disabled="!ready">
+    Confirm this location!
+  </button>
 </div>

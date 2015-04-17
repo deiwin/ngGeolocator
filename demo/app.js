@@ -8,6 +8,10 @@ angular.module('geolocator', ['ngGeolocator'])
           var locator;
           var locatorPromise = ngGeolocator.loadMap('map-canvas', googleMapsAPIKey);
           $scope.ready = false;
+          $scope.confirmLocation = function() {
+            var location = locator.getLocation();
+            alert('Confirmed location: '+location.lat+', '+location.lng);
+          };
           locatorPromise.then(function(_locator_) {
             locator = _locator_;
             locator.readyPromise.then(function() {
