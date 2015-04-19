@@ -1,6 +1,6 @@
 {
   "name": "ng-geolocator",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "Let the user tell you where they are with the aid of HTML5 Geolocation API and Google Maps",
   "homepage": "https://github.com/deiwin/ngGeolocator",
   "author": "Deiwin Sarjas <deiwin.sarjas@gmail.com>",

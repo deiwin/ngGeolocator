@@ -1,5 +1,5 @@
 /*!
- * ng-geolocator v0.0.0
+ * ng-geolocator v0.0.1
  * https://github.com/deiwin/ngGeolocator
  *
  * Let the user tell you where they are with the aid of HTML5 Geolocation API and Google Maps
@@ -20,7 +20,6 @@
   })();
 
   // src/js/geolocator.service.js
-  /*jshint -W072 */
   (function() {
     'use strict';
     var module = angular.module('ngGeolocator', ['ngGeolocatorConstants']);
