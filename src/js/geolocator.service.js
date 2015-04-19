@@ -62,12 +62,12 @@
         var infowindow = new $window.google.maps.InfoWindow(options);
         infowindow.setMap(map);
         map.setCenter(options.position);
+        return $q.reject(content);
       }
 
       function centerOnUsersLocation(map, locatorMarker) {
         if (!$window.navigator.geolocation) {
-          handleNoGeolocation(map, false);
-          return $q.reject('Geolocation service not supported.');
+          return handleNoGeolocation(map, false);
         }
         if (!geolocationPromise) {
           var geolocationDefer = $q.defer();
@@ -115,8 +115,7 @@
 
           map.setCenter(pos);
         }, function() {
-          handleNoGeolocation(map, true);
-          return $q.reject('Geolocation service failed.');
+          return handleNoGeolocation(map, true);
         });
       }
 
