@@ -10,7 +10,7 @@ angular.module('geolocator', ['ngGeolocator'])
             var location = locator.getLocation();
             alert('Confirmed location: '+location.lat+', '+location.lng);
           };
-          ngGeolocator.loadMap('map-canvas').then(function(_locator_) {
+          ngGeolocator.create('map-canvas').then(function(_locator_) {
             locator = _locator_;
             $scope.ready = true;
           }, function(message) {

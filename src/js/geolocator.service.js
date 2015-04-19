@@ -4,12 +4,23 @@
   var module = angular.module('ngGeolocator', ['ngGeolocatorConstants']);
 
   /**
-   * @constructor
+   * @constructs Locator
    * @param {google.maps.Marker} marker - The marker on the map that indicates the user's location
    */
   function Locator(marker) {
     this.marker = marker;
   }
+
+  /**
+   * @typedef LatLng
+   * @type {Object}
+   * @property {number} lat - The latitude.
+   * @property {number} lng - The longitude.
+   */
+
+  /**
+   * @returns {LatLng} The current user's selected position.
+   */
   Locator.prototype.getLocation = function() {
     var location = this.marker.getPosition();
     return {
@@ -22,7 +33,7 @@
     function($window, $q, $timeout, geolocationIndicator) {
       var mapsAPIPromise, geolocationPromise;
 
-      function loadMap(canvasID, key) {
+      function loadMapsAPI(key) {
         if (!mapsAPIPromise) {
           var mapsDefer = $q.defer();
           mapsAPIPromise = mapsDefer.promise;
@@ -35,37 +46,21 @@
           $window.googleMapsInitialized = mapsDefer.resolve;
           $window.document.body.appendChild(script);
         }
-        return mapsAPIPromise.then(function() {
-          var map = initMap(canvasID);
-          var locatorMarker = initLocatorMarker(map);
-          return centerOnUsersLocation(map, locatorMarker).then(function() {
-            return new Locator(locatorMarker);
-          });
-        });
+        return mapsAPIPromise;
       }
 
-      function handleNoGeolocation(map, errorFlag) {
-        var content;
-        if (errorFlag) {
-          content = 'Error: The Geolocation service failed.';
-        } else {
-          content = 'Error: Your browser doesn\'t support geolocation.';
-        }
-
-        var options = {
-          position: new $window.google.maps.LatLng(60, 105),
-          content: content,
-        };
-
-        var infowindow = new $window.google.maps.InfoWindow(options);
-        infowindow.setMap(map);
-        map.setCenter(options.position);
-        return $q.reject(content);
-      }
-
-      function centerOnUsersLocation(map, locatorMarker) {
+      /**
+       * Tries to get the users current location using the HTML5 Geolocation API
+       * and returns a promise for the position response from the Geolocation API.
+       * If the users declines or does not respond in time, the map promise will
+       * be used to draw an infobox on the map if/when the map is created and this
+       * methods promise will be rejected the failure message.
+       *
+       * @param {Promise} mapPromise
+       */
+      function loadUserLocation(mapPromise) {
         if (!$window.navigator.geolocation) {
-          return handleNoGeolocation(map, false);
+          return handleNoGeolocation(mapPromise, 'Your browser doesn\'t support geolocation.');
         }
         if (!geolocationPromise) {
           var geolocationDefer = $q.defer();
@@ -78,43 +73,69 @@
             $timeout.cancel(timeoutPromise);
           });
         }
-        return geolocationPromise.then(function(position) {
-          var pos = new $window.google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-          var marker = new $window.google.maps.Marker({
-            clickable: false,
-            cursor: 'pointer',
-            draggable: false,
-            flat: true,
-            icon: {
-              url: geolocationIndicator,
-              size: new $window.google.maps.Size(34, 34),
-              scaledSize: new $window.google.maps.Size(17, 17),
-              origin: new $window.google.maps.Point(0, 0),
-              anchor: new $window.google.maps.Point(8, 8)
-            },
-            title: 'Current location',
-            zIndex: 2,
-            position: pos,
-          });
-          marker.setMap(map);
-          var circle = new $window.google.maps.Circle({
-            clickable: false,
-            radius: position.coords.accuracy,
-            strokeColor: '1bb6ff',
-            strokeOpacity: 0.4,
-            fillColor: '61a0bf',
-            fillOpacity: 0.4,
-            strokeWeight: 1,
-            zIndex: 1,
-            center: pos,
-          });
-          circle.setMap(map);
-          locatorMarker.setPosition(pos);
-
-          map.setCenter(pos);
-        }, function() {
-          return handleNoGeolocation(map, true);
+        return geolocationPromise.catch(function() {
+          return handleNoGeolocation(mapPromise, 'The Geolocation service failed.');
         });
+      }
+
+      function handleNoGeolocation(mapPromise, error) {
+        var options = {
+          position: new $window.google.maps.LatLng(60, 105),
+          content: 'Error: '+error,
+        };
+
+        var infoWindow = new $window.google.maps.InfoWindow(options);
+        mapPromise.then(function(map) {
+          infoWindow.setMap(map);
+          map.setCenter(options.position);
+        });
+        return $q.reject(error);
+      }
+
+      /**
+       * Create a static marker for the given position and draw a circle with the accuracy
+       * radius around it.
+       */
+      function createGeoEstimateElements(map, position) {
+        var pos = converToLatLng(position);
+        var marker = new $window.google.maps.Marker({
+          clickable: false,
+          cursor: 'pointer',
+          draggable: false,
+          flat: true,
+          icon: {
+            url: geolocationIndicator,
+            size: new $window.google.maps.Size(34, 34),
+            scaledSize: new $window.google.maps.Size(17, 17),
+            origin: new $window.google.maps.Point(0, 0),
+            anchor: new $window.google.maps.Point(8, 8)
+          },
+          title: 'Current location',
+          zIndex: 2,
+          position: pos,
+        });
+        marker.setMap(map);
+        var circle = new $window.google.maps.Circle({
+          clickable: false,
+          radius: position.coords.accuracy,
+          strokeColor: '1bb6ff',
+          strokeOpacity: 0.4,
+          fillColor: '61a0bf',
+          fillOpacity: 0.4,
+          strokeWeight: 1,
+          zIndex: 1,
+          center: pos,
+        });
+        circle.setMap(map);
+      }
+
+      function centerMapOn(map, position) {
+        var pos = converToLatLng(position);
+        map.setCenter(pos);
+      }
+
+      function converToLatLng(position) {
+        return new $window.google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       }
 
       function initMap(canvasID) {
@@ -124,18 +145,20 @@
         return new $window.google.maps.Map($window.document.getElementById(canvasID), mapOptions);
       }
 
-      function initLocatorMarker(map) {
+      function createLocatorMarker(map, position) {
+        var pos = converToLatLng(position);
         return new $window.google.maps.Marker({
           draggable: true,
           zIndex: 3,
           map: map,
+          position: pos,
         });
       }
       return {
         /**
-         * loadMap will initialize google maps, if it isn't already initialized and
+         * create will initialize google maps, if it isn't already initialized and
          * will then initialize a map on the specified canvasID. Once the user has
-         * accepted to share their location the map will be centered to that location
+         * accepted to share their location, the map will be centered to that location
          * and a marker will be displayed that the user can move to confirm/specify
          * their actual location.
          *
@@ -143,7 +166,26 @@
          * @param {string} [key]    - Google Maps API key to be used for initializing the API.
          * @returns {Locator}
          */
-        loadMap: loadMap,
+        create: function(canvasID, key) {
+          var mapsAPIPromise = loadMapsAPI(key);
+          var mapPromise = mapsAPIPromise.then(function() {
+            return initMap(canvasID);
+          });
+          var userLocationPromise = loadUserLocation(mapPromise);
+
+          return $q.all({
+            map: mapPromise,
+            pos: userLocationPromise,
+          }).then(function(asyncResults) {
+            var map = asyncResults.map;
+            var pos = asyncResults.pos;
+
+            var locatorMarker = createLocatorMarker(map, pos);
+            centerMapOn(map, pos);
+            createGeoEstimateElements(map, pos);
+            return new Locator(locatorMarker);
+          });
+        },
       };
     }
   ]);
