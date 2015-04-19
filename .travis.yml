@@ -4,7 +4,7 @@ node_js:
 
 env:
   global:
-    - KARMA_BROWSERS=Firefox,PhantomJS
+    - KARMA_BROWSERS=PhantomJS
 
 install:
   - npm install

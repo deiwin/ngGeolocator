@@ -1,5 +1,5 @@
 var files = require('../files');
-var DEFAULT_BROWSERS = 'Chrome,Firefox,PhantomJS';
+var DEFAULT_BROWSERS = 'Chrome,PhantomJS';
 var browsers = process.env.KARMA_BROWSERS;
 var reporters = process.env.KARMA_REPORTERS;
 
