@@ -3,13 +3,17 @@ describe('ngGeolocator', function() {
   beforeEach(module('ngGeolocator'));
 
   describe('service', function() {
-    var service, $window, $rootScope;
-    beforeEach(inject(function(ngGeolocator, _$window_, _$rootScope_) {
+    var service, $window, $rootScope, $timeout;
+    beforeEach(inject(function(ngGeolocator, _$window_, _$rootScope_, _$timeout_) {
       service = ngGeolocator;
       $window = _$window_;
       $rootScope = _$rootScope_;
+      $timeout = _$timeout_;
       $window.document.body.appendChild = jasmine.createSpy('appendChild');
       $window.document.getElementById = jasmine.createSpy('getElementById');
+      $window.navigator.geolocation = {
+        getCurrentPosition: jasmine.createSpy('getCurrentPosition'),
+      };
       $window.google = {
         maps: {
           Map: jasmine.createSpy('maps.Map').and.returnValue({
@@ -82,6 +86,30 @@ describe('ngGeolocator', function() {
           }, 500);
 
           describe('with the map already created', function() {
+            itShouldCreateFailureInfoWindow();
+          });
+        });
+
+        describe('with geolocation service available', function() {
+          describe('with timeout reached without user responding', function() {
+            it('should fail', function(done) {
+              service.create().catch(function() {
+                done();
+              });
+              $timeout.flush();
+              $rootScope.$apply();
+            }, 500);
+
+            describe('with the map already created', function() {
+              itShouldCreateFailureInfoWindow(function() {
+                $timeout.flush();
+              });
+            });
+          });
+        });
+
+        function itShouldCreateFailureInfoWindow(f) {
+          describe('failure InfoWindow', function() {
             var locatorPromise, setMap, map, setCenter;
             beforeEach(function() {
               locatorPromise = service.create();
@@ -96,6 +124,9 @@ describe('ngGeolocator', function() {
             });
 
             it('should fail and create an info window on the map', function() {
+              if (f) {
+                f();
+              }
               $rootScope.$apply();
 
               expect($window.google.maps.InfoWindow).toHaveBeenCalled();
@@ -103,7 +134,7 @@ describe('ngGeolocator', function() {
               expect(setCenter).toHaveBeenCalled();
             });
           });
-        });
+        }
       });
     });
   });
