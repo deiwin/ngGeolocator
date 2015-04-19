@@ -39,6 +39,9 @@ module.exports = {
       background: true,
       singleRun: false,
       autoWatch: false
+    },
+    files: {
+      src: files.environments.karma.concat([files.unitTests])
     }
   }
 };
