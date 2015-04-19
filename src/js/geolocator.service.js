@@ -6,12 +6,9 @@
   /**
    * @constructor
    * @param {google.maps.Marker} marker - The marker on the map that indicates the user's location
-   * @param {Promise} readyPromise      - Promise that will be resolved when the marker is ready
-   *                                    to be queried for the user's location.
    */
-  function Locator(marker, readyPromise) {
+  function Locator(marker) {
     this.marker = marker;
-    this.readyPromise = readyPromise;
   }
   Locator.prototype.getLocation = function() {
     var location = this.marker.getPosition();
@@ -41,8 +38,9 @@
         return mapsAPIPromise.then(function() {
           var map = initMap(canvasID);
           var locatorMarker = initLocatorMarker(map);
-          var readyPromise = centerOnUsersLocation(map, locatorMarker);
-          return new Locator(locatorMarker, readyPromise);
+          return centerOnUsersLocation(map, locatorMarker).then(function() {
+            return new Locator(locatorMarker);
+          });
         });
       }
 
