@@ -20,12 +20,12 @@ describe('ngGeolocator', function() {
         it('add the google maps API script to body', function() {
           service.create();
           expect(appendChild).toHaveBeenCalled();
-          expect(appendChild.calls.first().args[0].src).toMatch("maps.googleapis.com/maps/api/js");
+          expect(appendChild.calls.first().args[0].src).toMatch('maps.googleapis.com/maps/api/js');
         });
 
         it ('should include the key, if added', function() {
           service.create('', 'a-test-key');
-          expect(appendChild.calls.first().args[0].src).toMatch("key=a-test-key");
+          expect(appendChild.calls.first().args[0].src).toMatch('key=a-test-key');
         });
       });
     });
