@@ -33,6 +33,14 @@
     function($window, $q, $timeout, geolocationIndicator) {
       var mapsAPIPromise, geolocationPromise;
 
+      /**
+       * Asynchorously loads the Google Maps API by appending it's script to the
+       * DOM body element.
+       *
+       * @param {string} [key] The Google Maps API key.
+       * @returns {Promise} A promise that will be resolved when Google Maps has
+       * been initialized.
+       */
       function loadMapsAPI(key) {
         if (!mapsAPIPromise) {
           var mapsDefer = $q.defer();
@@ -57,6 +65,7 @@
        * methods promise will be rejected the failure message.
        *
        * @param {Promise} mapPromise
+       * @returns {Promise}
        */
       function loadUserLocation(mapPromise) {
         if (!$window.navigator.geolocation) {
