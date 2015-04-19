@@ -20,8 +20,16 @@ describe('ngGeolocator', function() {
             setCenter: jasmine.createSpy('maps.Map.setCenter'),
           }),
           LatLng: jasmine.createSpy('maps.LatLng'),
+          Size: jasmine.createSpy('maps.Size'),
+          Point: jasmine.createSpy('maps.Point'),
           InfoWindow: jasmine.createSpy('maps.InfoWindow').and.returnValue({
             setMap: jasmine.createSpy('maps.InfoWindow.setMap'),
+          }),
+          Marker: jasmine.createSpy('maps.Marker').and.returnValue({
+            setMap: jasmine.createSpy('maps.Marker.setMap'),
+          }),
+          Circle: jasmine.createSpy('maps.Circle').and.returnValue({
+            setMap: jasmine.createSpy('maps.Circle.setMap'),
           }),
         },
       };
@@ -135,6 +143,50 @@ describe('ngGeolocator', function() {
             });
           });
         }
+      });
+
+      describe('creating the locator, with maps initialized and location available', function() {
+        var locatorPromise, position;
+        beforeEach(function() {
+          locatorPromise = service.create();
+          callMapsCallback();
+          position = {
+            coords: {
+              latitude: 10,
+              longitude: 20,
+              accuracy: 30,
+            },
+          };
+          $window.navigator.geolocation.getCurrentPosition.calls.first().args[0](position);
+        });
+
+        it('should resolve the promise with a locator, that has the location of the marker', function() {
+          var locator;
+          locatorPromise.then(function(l) {
+            locator = l;
+          });
+          var getPosition = jasmine.createSpy('getPosition').and.returnValue({
+            lat: function() {
+              return 10;
+            },
+            lng: function() {
+              return 20;
+            },
+          });
+          $window.google.maps.Marker.and.returnValue({
+            setMap: $window.google.maps.Marker().setMap,
+            getPosition: getPosition,
+          });
+
+          $rootScope.$apply();
+
+          expect($window.google.maps.LatLng).toHaveBeenCalledWith(10, 20);
+          expect($window.google.maps.Circle).toHaveBeenCalled();
+          expect($window.google.maps.Circle.calls.first().args[0].radius).toEqual(30);
+          var position = locator.getLocation();
+          expect(position.lat).toEqual(10);
+          expect(position.lng).toEqual(20);
+        });
       });
     });
   });

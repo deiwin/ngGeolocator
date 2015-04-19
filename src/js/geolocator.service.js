@@ -1,4 +1,3 @@
-/*jshint -W072 */
 (function() {
   'use strict';
   var module = angular.module('ngGeolocator', ['ngGeolocatorConstants']);
