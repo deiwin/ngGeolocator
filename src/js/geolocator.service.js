@@ -88,13 +88,12 @@
       }
 
       function handleNoGeolocation(mapPromise, error) {
-        var options = {
-          position: new $window.google.maps.LatLng(60, 105),
-          content: 'Error: '+error,
-        };
-
-        var infoWindow = new $window.google.maps.InfoWindow(options);
         mapPromise.then(function(map) {
+          var options = {
+            position: new $window.google.maps.LatLng(60, 105),
+            content: 'Error: '+error,
+          };
+          var infoWindow = new $window.google.maps.InfoWindow(options);
           infoWindow.setMap(map);
           map.setCenter(options.position);
         });
