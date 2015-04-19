@@ -1,12 +1,10 @@
 angular.module('geolocator', ['ngGeolocator'])
-  .constant('googleMapsAPIKey', 'AIzaSyD25T9lG8fVHB6jq9vQ5L5beXndQMtCtAA')
-  .directive('geolocator', ['ngGeolocator', 'googleMapsAPIKey',
-    function(ngGeolocator, googleMapsAPIKey) {
+  .directive('geolocator', ['ngGeolocator',
+    function(ngGeolocator) {
       return {
         scope: {},
         link: function($scope, $element, $attrs) {
           var locator;
-          // var locatorPromise = ngGeolocator.loadMap('map-canvas', googleMapsAPIKey);
           var locatorPromise = ngGeolocator.loadMap('map-canvas');
           $scope.ready = false;
           $scope.confirmLocation = function() {
