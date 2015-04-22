@@ -163,15 +163,16 @@
       }
       return {
         /**
-         * create will initialize google maps, if it isn't already initialized and
-         * will then initialize a map on the specified canvasID. Once the user has
+         * create will initialize google maps, if it isn't already initialized, and
+         * will then draw a map on the specified canvasID. Once the user has
          * accepted to share their location, the map will be centered to that location
          * and a marker will be displayed that the user can move to confirm/specify
-         * their actual location.
+         * their actual location. This marker will then be used to create a new
+         * {@link Locator} object which will then be used to resolve the returned promise.
          *
          * @param {string} canvasID - The elemt ID of the canvas to load the map onto.
          * @param {string} [key]    - Google Maps API key to be used for initializing the API.
-         * @returns {Locator}
+         * @returns {Promise.<Locator>}
          */
         create: function(canvasID, key) {
           var mapsAPIPromise = loadMapsAPI(key);
