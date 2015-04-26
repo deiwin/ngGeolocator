@@ -11,8 +11,7 @@ A live demo: http://deiwin.github.io/ngGeolocator/
 
 This project used [ChadKillingsworth/geolocation-marker](https://github.com/ChadKillingsworth/geolocation-marker) as a starting point.
 
-Installation
-----------
+# Installation
 
 	npm install --save ng-geolocator
 
@@ -20,8 +19,7 @@ or
 
 	bower install --save ng-geolocator
 
-Getting started
----------------
+# Getting started
 
 See the demo folder for a useful example. The following has just the
 basics to get you started.
@@ -53,8 +51,74 @@ var location = locator.getLocation();
 doSomethingWith(location.lat, location.lng);
 ```
 
-Demo !
-------
+# Docs
+## Classes
+<dl>
+<dt><a href="#Locator">Locator</a></dt>
+<dd></dd>
+</dl>
+## Functions
+<dl>
+<dt><a href="#create">create(canvasID, [key])</a> ⇒ <code><a href="#Locator">Promise.&lt;Locator&gt;</a></code></dt>
+<dd><p>create will initialize google maps, if it isn&#39;t already initialized, and
+will then draw a map on the specified canvasID. Once the user has
+accepted to share their location, the map will be centered to that location
+and a marker will be displayed that the user can move to confirm/specify
+their actual location. This marker will then be used to create a new
+<a href="#Locator">Locator</a> object which will then be used to resolve the returned promise.</p>
+</dd>
+</dl>
+## Typedefs
+<dl>
+<dt><a href="#LatLng">LatLng</a> : <code>Object</code></dt>
+<dd></dd>
+</dl>
+<a name="Locator"></a>
+## Locator
+**Kind**: global class  
+
+* [Locator](#Locator)
+  * [new Locator(marker)](#new_Locator_new)
+  * [.getLocation()](#Locator#getLocation) ⇒ <code>[LatLng](#LatLng)</code>
+
+<a name="new_Locator_new"></a>
+### new Locator(marker)
+
+| Param | Type | Description |
+| --- | --- | --- |
+| marker | <code>google.maps.Marker</code> | The marker on the map that indicates the user's location |
+
+<a name="Locator#getLocation"></a>
+### locator.getLocation() ⇒ <code>[LatLng](#LatLng)</code>
+**Kind**: instance method of <code>[Locator](#Locator)</code>  
+**Returns**: <code>[LatLng](#LatLng)</code> - The current user's selected position.  
+<a name="create"></a>
+## create(canvasID, [key]) ⇒ <code>[Promise.&lt;Locator&gt;](#Locator)</code>
+create will initialize google maps, if it isn't already initialized, and
+will then draw a map on the specified canvasID. Once the user has
+accepted to share their location, the map will be centered to that location
+and a marker will be displayed that the user can move to confirm/specify
+their actual location. This marker will then be used to create a new
+[Locator](#Locator) object which will then be used to resolve the returned promise.
+
+**Kind**: global function  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| canvasID | <code>string</code> | The elemt ID of the canvas to load the map onto. |
+| [key] | <code>string</code> | Google Maps API key to be used for initializing the API. |
+
+<a name="LatLng"></a>
+## LatLng : <code>Object</code>
+**Kind**: global typedef  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| lat | <code>number</code> | The latitude. |
+| lng | <code>number</code> | The longitude. |
+
+# Demo !
 
 Clone this repo, run `npm install` and then start the demo server with
 `grunt demo` and go to [http://localhost:8000](http://localhost:8000).
