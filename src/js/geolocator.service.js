@@ -59,7 +59,7 @@
 
         var locatorMarker = createLocatorMarker(map, pos);
         centerMapOn(map, pos);
-        createGeoEstimateElements(map, pos);
+        createStaticGeoEstimateElements(map, pos);
         return new Locator(locatorMarker);
       });
     };
@@ -135,7 +135,7 @@
      * Create a static marker for the given position and draw a circle with the accuracy
      * radius around it.
      */
-    function createGeoEstimateElements(map, position) {
+    function createStaticGeoEstimateElements(map, position) {
       var pos = converToLatLng(position);
       var marker = new $window.google.maps.Marker({
         clickable: false,
