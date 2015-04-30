@@ -35,7 +35,7 @@
    * @constructor
    * @memberof ngGeolocator
    */
-  function LocatorService($window, $q, $timeout, staticMarkerURL, googleMapsAPIKey) {
+  function LocatorService($window, $q, $timeout, staticMarkerURL, optionsExtenders, googleMapsAPIKey) {
     var mapsAPIPromise, geolocationPromise;
 
     /**
@@ -186,6 +186,9 @@
       var mapOptions = {
         zoom: 17,
       };
+      if (optionsExtenders.map) {
+        angular.extend(mapOptions, optionsExtenders.map($window.google.maps));
+      }
       return new $window.google.maps.Map($window.document.getElementById(canvasID), mapOptions);
     }
 
@@ -205,17 +208,58 @@
    * @memberof ngGeolocator
    */
   function LocatorServiceProvider(staticMarkerURL) {
+    var optionsExtenders = {};
     var googleMapsAPIKey;
 
+    /**
+     * Configure the service to use the specified Google Maps API Key.
+     *
+     * @param {string} googleMapsAPIKey
+     */
     this.setGoogleMapsAPIKey = function(_googleMapsAPIKey_) {
       googleMapsAPIKey = _googleMapsAPIKey_;
     };
 
+    /**
+     * The {@link https://developers.google.com/maps/documentation/javascript/3.exp/reference#MapOptions|google.maps.MapOptions}
+     * used to initialize the map will be extended using the provided function or object. If the extender is an object it will
+     * simply be used to extend (using {@link https://docs.angularjs.org/api/ng/function/angular.extend|angular.extend})
+     * the options object used to initialize the map. If, instead, the extender is a function, it will be called with the API
+     * (<code>google.maps</code>) once Google Maps is loaded. An object used to extend <code>MapOptions</code> is expected as
+     * the return value of the function.
+     *
+     * @example <caption>Using an object</caption>
+     * ngGeolocatorProvider.extendMapOptions({
+     *   zoom: 15,
+     * });
+     *
+     * @example <caption>Using a function</caption>
+     * ngGeolocatorProvider.extendMapOptions(function(maps) {
+     *   return {
+     *     center: maps.LatLng(10, 20),
+     *   };
+     * });
+     *
+     * @param {(Object|function(google.maps): Object)} extender
+     */
+    this.extendMapOptions = function(extender) {
+      if (typeof(extender) !== 'function') {
+        extender = wrapAsFunction(extender);
+      }
+      optionsExtenders.map = extender;
+    };
+
     this.$get = ['$window', '$q', '$timeout',
       function($window, $q, $timeout) {
-        return new LocatorService($window, $q, $timeout, staticMarkerURL, googleMapsAPIKey);
+        return new LocatorService($window, $q, $timeout, staticMarkerURL, optionsExtenders, googleMapsAPIKey);
       }
     ];
+
+    function wrapAsFunction(obj) {
+      return function() {
+        return obj;
+      };
+    }
   }
 
   angular.module('ngGeolocator', ['ngGeolocatorConstants'])

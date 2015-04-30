@@ -92,6 +92,24 @@ describe('ngGeolocator', function() {
             expect(args[0]).toBe(mockElement);
             expect(args[1].zoom).toBeDefined();
           });
+
+          describe('with map options extension object configured', function() {
+            beforeEach(inject(function($injector) {
+              provider.extendMapOptions({
+                zoom: 'should-be-a-number-but-isn\'t-for-this-test',
+              });
+              service = $injector.invoke(provider.$get);
+              locatorPromise = service.create('canvas-id');
+              callMapsCallback();
+            }));
+
+            it('should use the extend options', function() {
+              $rootScope.$apply();
+
+              var args = $window.google.maps.Map.calls.first().args;
+              expect(args[1].zoom).toBe('should-be-a-number-but-isn\'t-for-this-test');
+            });
+          });
         });
       });
 
