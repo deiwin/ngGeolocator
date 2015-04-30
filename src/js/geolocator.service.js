@@ -7,26 +7,26 @@
    * @param {google.maps.Marker} marker - The marker on the map that indicates the user's location
    */
   function Locator(marker) {
-    this.marker = marker;
+    /**
+     * @typedef LatLng
+     * @type {Object}
+     * @property {number} lat - The latitude.
+     * @property {number} lng - The longitude.
+     */
+
+    /**
+     * @returns {LatLng} The current user's selected position.
+     */
+    this.getLocation = function() {
+      var location = marker.getPosition();
+      return {
+        lat: location.lat(),
+        lng: location.lng(),
+      };
+    };
   }
 
-  /**
-   * @typedef LatLng
-   * @type {Object}
-   * @property {number} lat - The latitude.
-   * @property {number} lng - The longitude.
-   */
 
-  /**
-   * @returns {LatLng} The current user's selected position.
-   */
-  Locator.prototype.getLocation = function() {
-    var location = this.marker.getPosition();
-    return {
-      lat: location.lat(),
-      lng: location.lng(),
-    };
-  };
 
   module.factory('ngGeolocator', ['$window', '$q', '$timeout', 'geolocationIndicator',
     function($window, $q, $timeout, geolocationIndicator) {
