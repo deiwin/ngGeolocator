@@ -28,7 +28,7 @@
   /**
    * @constructs LocatorService
    */
-  function LocatorService($window, $q, $timeout, geolocationIndicator) {
+  function LocatorService($window, $q, $timeout, staticMarkerURL) {
     var mapsAPIPromise, geolocationPromise;
 
     /**
@@ -143,7 +143,7 @@
         draggable: false,
         flat: true,
         icon: {
-          url: geolocationIndicator,
+          url: staticMarkerURL,
           size: new $window.google.maps.Size(34, 34),
           scaledSize: new $window.google.maps.Size(17, 17),
           origin: new $window.google.maps.Point(0, 0),
@@ -196,9 +196,9 @@
   }
 
   function LocatorServiceProvider() {
-    this.$get = ['$window', '$q', '$timeout', 'geolocationIndicator',
-      function($window, $q, $timeout, geolocationIndicator) {
-        return new LocatorService($window, $q, $timeout, geolocationIndicator);
+    this.$get = ['$window', '$q', '$timeout', 'staticMarkerURL',
+      function($window, $q, $timeout, staticMarkerURL) {
+        return new LocatorService($window, $q, $timeout, staticMarkerURL);
       }
     ];
   }
