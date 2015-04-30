@@ -180,7 +180,17 @@ describe('ngGeolocator', function() {
 
       describe('creating the locator, with maps initialized and location available', function() {
         var locatorPromise, position;
-        beforeEach(function() {
+        beforeEach(inject(function($injector) {
+          provider.extendStaticCircleOptions({
+            testField: 'test-field',
+          });
+          provider.extendStaticMarkerOptions({
+            testField: 'test-static-marker-field',
+          });
+          provider.extendLocatorMarkerOptions({
+            testField: 'test-locator-marker-field',
+          });
+          service = $injector.invoke(provider.$get);
           locatorPromise = service.create();
           callMapsCallback();
           position = {
@@ -191,7 +201,7 @@ describe('ngGeolocator', function() {
             },
           };
           $window.navigator.geolocation.getCurrentPosition.calls.first().args[0](position);
-        });
+        }));
 
         it('should resolve the promise with a locator, that has the location of the marker', function() {
           var locator;
@@ -210,12 +220,18 @@ describe('ngGeolocator', function() {
             setMap: $window.google.maps.Marker().setMap,
             getPosition: getPosition,
           });
+          $window.google.maps.Marker.calls.reset();
 
           $rootScope.$apply();
 
           expect($window.google.maps.LatLng).toHaveBeenCalledWith(10, 20);
           expect($window.google.maps.Circle).toHaveBeenCalled();
           expect($window.google.maps.Circle.calls.first().args[0].radius).toEqual(30);
+          expect($window.google.maps.Circle.calls.first().args[0].testField).toEqual('test-field');
+          expect($window.google.maps.Marker).toHaveBeenCalled();
+          expect($window.google.maps.Marker.calls.count()).toEqual(2);
+          expect($window.google.maps.Marker.calls.argsFor(0)[0].testField).toEqual('test-locator-marker-field');
+          expect($window.google.maps.Marker.calls.argsFor(1)[0].testField).toEqual('test-static-marker-field');
           var position = locator.getLocation();
           expect(position.lat).toEqual(10);
           expect(position.lng).toEqual(20);

@@ -142,7 +142,7 @@
      */
     function createStaticGeoEstimateElements(map, position) {
       var pos = converToLatLng(position);
-      var marker = new $window.google.maps.Marker({
+      var markerOptions = {
         clickable: false,
         cursor: 'pointer',
         draggable: false,
@@ -157,9 +157,14 @@
         title: 'Current location',
         zIndex: 2,
         position: pos,
-      });
+      };
+      if (optionsExtenders.staticMarker) {
+        angular.extend(markerOptions, optionsExtenders.staticMarker($window.google.maps));
+      }
+      var marker = new $window.google.maps.Marker(markerOptions);
       marker.setMap(map);
-      var circle = new $window.google.maps.Circle({
+
+      var circleOptions = {
         clickable: false,
         radius: position.coords.accuracy,
         strokeColor: '1bb6ff',
@@ -169,7 +174,11 @@
         strokeWeight: 1,
         zIndex: 1,
         center: pos,
-      });
+      };
+      if (optionsExtenders.staticCircle) {
+        angular.extend(circleOptions, optionsExtenders.staticCircle($window.google.maps));
+      }
+      var circle = new $window.google.maps.Circle(circleOptions);
       circle.setMap(map);
     }
 
@@ -194,12 +203,16 @@
 
     function createLocatorMarker(map, position) {
       var pos = converToLatLng(position);
-      return new $window.google.maps.Marker({
+      var markerOptions = {
         draggable: true,
         zIndex: 3,
         map: map,
         position: pos,
-      });
+      };
+      if (optionsExtenders.locatorMarker) {
+        angular.extend(markerOptions, optionsExtenders.locatorMarker($window.google.maps));
+      }
+      return new $window.google.maps.Marker(markerOptions);
     }
   }
 
@@ -243,10 +256,37 @@
      * @param {(Object|function(google.maps): Object)} extender
      */
     this.extendMapOptions = function(extender) {
-      if (typeof(extender) !== 'function') {
-        extender = wrapAsFunction(extender);
-      }
-      optionsExtenders.map = extender;
+      optionsExtenders.map = wrapNonFunctionsAsFunctions(extender);
+    };
+    /**
+     * Extends the
+     * {@link https://developers.google.com/maps/documentation/javascript/3.exp/reference#MarkerOptions|google.maps.MarkerOptions}
+     * for the static marker.
+     *
+     * @see {@linkcode extendMapOptions} for more info and examples
+     */
+    this.extendStaticMarkerOptions = function(extender) {
+      optionsExtenders.staticMarker = wrapNonFunctionsAsFunctions(extender);
+    };
+    /**
+     * Extends the
+     * {@link https://developers.google.com/maps/documentation/javascript/3.exp/reference#CircleOptions|google.maps.CircleOptions}
+     * for the static circle.
+     *
+     * @see {@linkcode extendMapOptions} for more info and examples
+     */
+    this.extendStaticCircleOptions = function(extender) {
+      optionsExtenders.staticCircle = wrapNonFunctionsAsFunctions(extender);
+    };
+    /**
+     * Extends the
+     * {@link https://developers.google.com/maps/documentation/javascript/3.exp/reference#MarkerOptions|google.maps.MarkerOptions}
+     * for the locator marker.
+     *
+     * @see {@linkcode extendMapOptions} for more info and examples
+     */
+    this.extendLocatorMarkerOptions = function(extender) {
+      optionsExtenders.locatorMarker = wrapNonFunctionsAsFunctions(extender);
     };
 
     this.$get = ['$window', '$q', '$timeout',
@@ -254,6 +294,13 @@
         return new LocatorService($window, $q, $timeout, staticMarkerURL, optionsExtenders, googleMapsAPIKey);
       }
     ];
+
+    function wrapNonFunctionsAsFunctions(x) {
+      if (typeof(x) === 'function') {
+        return x;
+      }
+      return wrapAsFunction(x);
+    }
 
     function wrapAsFunction(obj) {
       return function() {
