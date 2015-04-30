@@ -80,12 +80,7 @@ Please see the docs or the code itself for any questions.
     * [new Locator(marker)](#new_ngGeolocator.Locator_new)
     * [.getLocation()](#ngGeolocator.Locator#getLocation) ⇒ <code>LatLng</code>
   * [.LocatorService](#ngGeolocator.LocatorService)
-    * _instance_
-      * [.create(canvasID)](#ngGeolocator.LocatorService#create) ⇒ <code>Promise.&lt;Locator&gt;</code>
-    * _inner_
-      * [~loadMapsAPI()](#ngGeolocator.LocatorService..loadMapsAPI) ⇒ <code>Promise</code>
-      * [~loadUserLocation(mapPromise)](#ngGeolocator.LocatorService..loadUserLocation) ⇒ <code>Promise</code>
-      * [~createStaticGeoEstimateElements()](#ngGeolocator.LocatorService..createStaticGeoEstimateElements)
+    * [.create(canvasID)](#ngGeolocator.LocatorService#create) ⇒ <code>Promise.&lt;Locator&gt;</code>
   * [.LocatorServiceProvider](#ngGeolocator.LocatorServiceProvider)
     * [.setGoogleMapsAPIKey(googleMapsAPIKey)](#ngGeolocator.LocatorServiceProvider#setGoogleMapsAPIKey)
     * [.extendMapOptions(extender)](#ngGeolocator.LocatorServiceProvider#extendMapOptions)
@@ -118,12 +113,7 @@ Please see the docs or the code itself for any questions.
 **Kind**: static class of <code>[ngGeolocator](#ngGeolocator)</code>  
 
 * [.LocatorService](#ngGeolocator.LocatorService)
-  * _instance_
-    * [.create(canvasID)](#ngGeolocator.LocatorService#create) ⇒ <code>Promise.&lt;Locator&gt;</code>
-  * _inner_
-    * [~loadMapsAPI()](#ngGeolocator.LocatorService..loadMapsAPI) ⇒ <code>Promise</code>
-    * [~loadUserLocation(mapPromise)](#ngGeolocator.LocatorService..loadUserLocation) ⇒ <code>Promise</code>
-    * [~createStaticGeoEstimateElements()](#ngGeolocator.LocatorService..createStaticGeoEstimateElements)
+  * [.create(canvasID)](#ngGeolocator.LocatorService#create) ⇒ <code>Promise.&lt;Locator&gt;</code>
 
 <a name="ngGeolocator.LocatorService#create"></a>
 #### locatorService.create(canvasID) ⇒ <code>Promise.&lt;Locator&gt;</code>
@@ -140,34 +130,6 @@ their actual location. This marker will then be used to create a new
 | --- | --- | --- |
 | canvasID | <code>string</code> | The elemt ID of the canvas to load the map onto. |
 
-<a name="ngGeolocator.LocatorService..loadMapsAPI"></a>
-#### LocatorService~loadMapsAPI() ⇒ <code>Promise</code>
-Asynchorously loads the Google Maps API by appending it's script to the
-DOM body element.
-
-**Kind**: inner method of <code>[LocatorService](#ngGeolocator.LocatorService)</code>  
-**Returns**: <code>Promise</code> - A promise that will be resolved when Google Maps has
-been initialized.  
-<a name="ngGeolocator.LocatorService..loadUserLocation"></a>
-#### LocatorService~loadUserLocation(mapPromise) ⇒ <code>Promise</code>
-Tries to get the users current location using the HTML5 Geolocation API
-and returns a promise for the position response from the Geolocation API.
-If the users declines or does not respond in time, the map promise will
-be used to draw an infobox on the map if/when the map is created and this
-methods promise will be rejected the failure message.
-
-**Kind**: inner method of <code>[LocatorService](#ngGeolocator.LocatorService)</code>  
-
-| Param | Type |
-| --- | --- |
-| mapPromise | <code>Promise</code> |
-
-<a name="ngGeolocator.LocatorService..createStaticGeoEstimateElements"></a>
-#### LocatorService~createStaticGeoEstimateElements()
-Create a static marker for the given position and draw a circle with the accuracy
-radius around it.
-
-**Kind**: inner method of <code>[LocatorService](#ngGeolocator.LocatorService)</code>  
 <a name="ngGeolocator.LocatorServiceProvider"></a>
 ### ngGeolocator.LocatorServiceProvider
 **Kind**: static class of <code>[ngGeolocator](#ngGeolocator)</code>  
