@@ -195,20 +195,20 @@
     }
   }
 
-  function LocatorServiceProvider() {
+  function LocatorServiceProvider(staticMarkerURL) {
     var googleMapsAPIKey;
 
     this.setGoogleMapsAPIKey = function(_googleMapsAPIKey_) {
       googleMapsAPIKey = _googleMapsAPIKey_;
     };
 
-    this.$get = ['$window', '$q', '$timeout', 'staticMarkerURL',
-      function($window, $q, $timeout, staticMarkerURL) {
+    this.$get = ['$window', '$q', '$timeout',
+      function($window, $q, $timeout) {
         return new LocatorService($window, $q, $timeout, staticMarkerURL, googleMapsAPIKey);
       }
     ];
   }
 
   angular.module('ngGeolocator', ['ngGeolocatorConstants'])
-    .provider('ngGeolocator', LocatorServiceProvider);
+    .provider('ngGeolocator', ['staticMarkerURL', LocatorServiceProvider]);
 })();
