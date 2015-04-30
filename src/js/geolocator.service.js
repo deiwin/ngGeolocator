@@ -27,8 +27,10 @@
 
   /**
    * @constructs LocatorService
+   *
+   * @param {string} [googleMapsAPIKey] - Google Maps API key to be used for initializing the API.
    */
-  function LocatorService($window, $q, $timeout, staticMarkerURL) {
+  function LocatorService($window, $q, $timeout, staticMarkerURL, googleMapsAPIKey) {
     var mapsAPIPromise, geolocationPromise;
 
     /**
@@ -40,11 +42,10 @@
      * {@link Locator} object which will then be used to resolve the returned promise.
      *
      * @param {string} canvasID - The elemt ID of the canvas to load the map onto.
-     * @param {string} [key]    - Google Maps API key to be used for initializing the API.
      * @returns {Promise.<Locator>}
      */
-    this.create = function(canvasID, key) {
-      var mapsAPIPromise = loadMapsAPI(key);
+    this.create = function(canvasID) {
+      var mapsAPIPromise = loadMapsAPI();
       var mapPromise = mapsAPIPromise.then(function() {
         return initMap(canvasID);
       });
@@ -68,19 +69,18 @@
      * Asynchorously loads the Google Maps API by appending it's script to the
      * DOM body element.
      *
-     * @param {string} [key] The Google Maps API key.
      * @returns {Promise} A promise that will be resolved when Google Maps has
      * been initialized.
      */
-    function loadMapsAPI(key) {
+    function loadMapsAPI() {
       if (!mapsAPIPromise) {
         var mapsDefer = $q.defer();
         mapsAPIPromise = mapsDefer.promise;
         var script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=googleMapsInitialized';
-        if (key) {
-          script.src += '&key=' + key;
+        if (googleMapsAPIKey) {
+          script.src += '&key=' + googleMapsAPIKey;
         }
         $window.googleMapsInitialized = mapsDefer.resolve;
         $window.document.body.appendChild(script);
@@ -196,9 +196,15 @@
   }
 
   function LocatorServiceProvider() {
+    var googleMapsAPIKey;
+
+    this.setGoogleMapsAPIKey = function(_googleMapsAPIKey_) {
+      googleMapsAPIKey = _googleMapsAPIKey_;
+    };
+
     this.$get = ['$window', '$q', '$timeout', 'staticMarkerURL',
       function($window, $q, $timeout, staticMarkerURL) {
-        return new LocatorService($window, $q, $timeout, staticMarkerURL);
+        return new LocatorService($window, $q, $timeout, staticMarkerURL, googleMapsAPIKey);
       }
     ];
   }

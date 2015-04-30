@@ -26,14 +26,17 @@ basics to get you started.
 
 ```js
 // Add ngGeolocator as a dependency to your module
-angular.module('yourModule', ['ngGeolocator']);
+var yourModule = angular.module('yourModule', ['ngGeolocator']);
+
+// Optionally configure the service to use a Google Maps API Key.
+yourModule.config(['ngGeolocatorProvider', function(ngGeolocatorProvider) {
+	ngGeolocatorProvider.setGoogleMapsAPIKey('your-api-key-goes-here');
+}]);
 
 // Asynchronously load the Google Maps API (into an object with the
 // specified map-canvas id) and ask the user's bowser to share the
 // user's location. If both of those things have been approved
 // and have happened, the promise will be resolved with a Locator object.
-// The create method also takes optionally a Google Maps API key that
-// will, if provided, be used to load the API.
 var locator;
 ngGeolocator.create('map-canvas').then(function(_locator_) {
 	// Let's just store the locator for now

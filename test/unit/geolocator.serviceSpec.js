@@ -1,6 +1,9 @@
 describe('ngGeolocator', function() {
   'use strict';
-  beforeEach(module('ngGeolocator'));
+  var provider;
+  beforeEach(module('ngGeolocator', function(ngGeolocatorProvider) {
+    provider = ngGeolocatorProvider;
+  }));
 
   describe('service', function() {
     var service, $window, $rootScope, $timeout;
@@ -53,9 +56,21 @@ describe('ngGeolocator', function() {
           expect(appendChild.calls.first().args[0].src).toMatch('maps.googleapis.com/maps/api/js');
         });
 
-        it('should include the key, if added', function() {
-          service.create('', 'a-test-key');
-          expect(appendChild.calls.first().args[0].src).toMatch('key=a-test-key');
+        it('should not include the API key if none configured', function() {
+          service.create('');
+          expect(appendChild.calls.first().args[0].src).not.toMatch('key=');
+        });
+
+        describe('with API key configured', function() {
+          beforeEach(inject(function($injector) {
+            provider.setGoogleMapsAPIKey('a-test-key');
+            service = $injector.invoke(provider.$get);
+          }));
+
+          it('should include the configured key', function() {
+            service.create('');
+            expect(appendChild.calls.first().args[0].src).toMatch('key=a-test-key');
+          });
         });
 
         describe('with API initialized', function() {
