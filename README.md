@@ -54,6 +54,22 @@ var location = locator.getLocation();
 doSomethingWith(location.lat, location.lng);
 ```
 
+## Getting fancy
+
+Say you don't like the color I've chosen to use for the accuracy indicator circle.
+Here's an easy way to customize it to your liking:
+
+```js
+yourModule.config(['ngGeolocatorProvider', function(ngGeolocatorProvider) {
+	ngGeolocatorProvider.extendStaticCircleOptions({
+		fillColor: 'cc99ff', // Mauve
+	});
+}]);
+```
+
+Custom icons and everything are also possible, but are left as an excercise to the reader.
+Please see the docs or the code itself for any questions.
+
 # Docs
 <a name="ngGeolocator"></a>
 ## ngGeolocator : <code>object</code>
