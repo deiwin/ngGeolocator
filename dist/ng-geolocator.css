@@ -1,5 +1,5 @@
 /*!
- * ng-geolocator v0.0.1
+ * ng-geolocator v1.0.0
  * https://github.com/deiwin/ngGeolocator
  *
  * Let the user tell you where they are with the aid of HTML5 Geolocation API and Google Maps
