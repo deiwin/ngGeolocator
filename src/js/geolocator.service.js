@@ -1,7 +1,12 @@
+/**
+ * @namespace ngGeolocator
+ */
 (function() {
   'use strict';
   /**
-   * @constructs Locator
+   * @constructor
+   * @memberof ngGeolocator
+   *
    * @param {google.maps.Marker} marker - The marker on the map that indicates the user's location
    */
   function Locator(marker) {
@@ -10,6 +15,7 @@
      * @type {Object}
      * @property {number} lat - The latitude.
      * @property {number} lng - The longitude.
+     * @memberof ngGeolocator
      */
 
     /**
@@ -26,9 +32,8 @@
 
 
   /**
-   * @constructs LocatorService
-   *
-   * @param {string} [googleMapsAPIKey] - Google Maps API key to be used for initializing the API.
+   * @constructor
+   * @memberof ngGeolocator
    */
   function LocatorService($window, $q, $timeout, staticMarkerURL, googleMapsAPIKey) {
     var mapsAPIPromise, geolocationPromise;
@@ -195,6 +200,10 @@
     }
   }
 
+  /**
+   * @constructor
+   * @memberof ngGeolocator
+   */
   function LocatorServiceProvider(staticMarkerURL) {
     var googleMapsAPIKey;
 
