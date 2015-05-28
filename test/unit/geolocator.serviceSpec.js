@@ -17,28 +17,35 @@ describe('ngGeolocator', function() {
       $window.navigator.geolocation = {
         getCurrentPosition: jasmine.createSpy('getCurrentPosition'),
       };
-      $window.google = {
-        maps: {
-          Map: jasmine.createSpy('maps.Map').and.returnValue({
-            setCenter: jasmine.createSpy('maps.Map.setCenter'),
-          }),
-          LatLng: jasmine.createSpy('maps.LatLng'),
-          Size: jasmine.createSpy('maps.Size'),
-          Point: jasmine.createSpy('maps.Point'),
-          InfoWindow: jasmine.createSpy('maps.InfoWindow').and.returnValue({
-            setMap: jasmine.createSpy('maps.InfoWindow.setMap'),
-          }),
-          Marker: jasmine.createSpy('maps.Marker').and.returnValue({
-            setMap: jasmine.createSpy('maps.Marker.setMap'),
-          }),
-          Circle: jasmine.createSpy('maps.Circle').and.returnValue({
-            setMap: jasmine.createSpy('maps.Circle.setMap'),
-          }),
-        },
-      };
+      delete $window.google;
     }));
 
+    function loadMockMapsAPI() {
+      inject(function() {
+        $window.google = {
+          maps: {
+            Map: jasmine.createSpy('maps.Map').and.returnValue({
+              setCenter: jasmine.createSpy('maps.Map.setCenter'),
+            }),
+            LatLng: jasmine.createSpy('maps.LatLng'),
+            Size: jasmine.createSpy('maps.Size'),
+            Point: jasmine.createSpy('maps.Point'),
+            InfoWindow: jasmine.createSpy('maps.InfoWindow').and.returnValue({
+              setMap: jasmine.createSpy('maps.InfoWindow.setMap'),
+            }),
+            Marker: jasmine.createSpy('maps.Marker').and.returnValue({
+              setMap: jasmine.createSpy('maps.Marker.setMap'),
+            }),
+            Circle: jasmine.createSpy('maps.Circle').and.returnValue({
+              setMap: jasmine.createSpy('maps.Circle.setMap'),
+            }),
+          },
+        };
+      });
+    }
+
     function callMapsCallback() {
+      loadMockMapsAPI();
       var callback = /callback=([^&]*)/.exec($window.document.body.appendChild.calls.first().args[0].src)[1];
       $window[callback]();
     }
@@ -70,6 +77,17 @@ describe('ngGeolocator', function() {
           it('should include the configured key', function() {
             service.create('');
             expect(appendChild.calls.first().args[0].src).toMatch('key=a-test-key');
+          });
+        });
+
+        describe('with google maps API loaded by someone other than this service', function() {
+          beforeEach(function() {
+            loadMockMapsAPI();
+          });
+
+          it('should\'nt append another async loading script on create', function() {
+            service.create();
+            expect(appendChild).not.toHaveBeenCalled();
           });
         });
 

@@ -81,6 +81,11 @@
       if (mapsAPIPromise) {
         return mapsAPIPromise;
       }
+      if (typeof $window.google === 'object' && typeof $window.google.maps === 'object') {
+        var defer = $q.defer();
+        defer.resolve();
+        return defer.promise;
+      }
       var mapsDefer = $q.defer();
       mapsAPIPromise = mapsDefer.promise;
       var script = document.createElement('script');
