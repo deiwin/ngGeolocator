@@ -80,6 +80,12 @@ describe('ngGeolocator', function() {
             callMapsCallback();
           });
 
+          it('should\'nt append another async loading script on create', function() {
+            appendChild.calls.reset();
+            service.create();
+            expect(appendChild).not.toHaveBeenCalled();
+          });
+
           it('should create the map on the specified canvas', function() {
             var mockElement = 'mockElement';
             $window.document.getElementById.and.returnValue(mockElement);
