@@ -78,18 +78,19 @@
      * been initialized.
      */
     function loadMapsAPI() {
-      if (!mapsAPIPromise) {
-        var mapsDefer = $q.defer();
-        mapsAPIPromise = mapsDefer.promise;
-        var script = document.createElement('script');
-        script.type = 'text/javascript';
-        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=googleMapsInitialized';
-        if (googleMapsAPIKey) {
-          script.src += '&key=' + googleMapsAPIKey;
-        }
-        $window.googleMapsInitialized = mapsDefer.resolve;
-        $window.document.body.appendChild(script);
+      if (mapsAPIPromise) {
+        return mapsAPIPromise;
       }
+      var mapsDefer = $q.defer();
+      mapsAPIPromise = mapsDefer.promise;
+      var script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=googleMapsInitialized';
+      if (googleMapsAPIKey) {
+        script.src += '&key=' + googleMapsAPIKey;
+      }
+      $window.googleMapsInitialized = mapsDefer.resolve;
+      $window.document.body.appendChild(script);
       return mapsAPIPromise;
     }
 
