@@ -147,7 +147,7 @@
      * radius around it.
      */
     function createStaticGeoEstimateElements(map, position) {
-      var pos = converToLatLng(position);
+      var pos = convertToLatLng(position);
       var markerOptions = {
         clickable: false,
         cursor: 'pointer',
@@ -189,11 +189,11 @@
     }
 
     function centerMapOn(map, position) {
-      var pos = converToLatLng(position);
+      var pos = convertToLatLng(position);
       map.setCenter(pos);
     }
 
-    function converToLatLng(position) {
+    function convertToLatLng(position) {
       return new $window.google.maps.LatLng(position.coords.latitude, position.coords.longitude);
     }
 
@@ -208,7 +208,7 @@
     }
 
     function createLocatorMarker(map, position) {
-      var pos = converToLatLng(position);
+      var pos = convertToLatLng(position);
       var markerOptions = {
         draggable: true,
         zIndex: 3,
