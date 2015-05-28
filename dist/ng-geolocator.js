@@ -1,5 +1,5 @@
 /*!
- * ng-geolocator v1.0.0
+ * ng-geolocator v1.0.1
  * https://github.com/deiwin/ngGeolocator
  *
  * Let the user tell you where they are with the aid of HTML5 Geolocation API and Google Maps
@@ -100,18 +100,24 @@
        * been initialized.
        */
       function loadMapsAPI() {
-        if (!mapsAPIPromise) {
-          var mapsDefer = $q.defer();
-          mapsAPIPromise = mapsDefer.promise;
-          var script = document.createElement('script');
-          script.type = 'text/javascript';
-          script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=googleMapsInitialized';
-          if (googleMapsAPIKey) {
-            script.src += '&key=' + googleMapsAPIKey;
-          }
-          $window.googleMapsInitialized = mapsDefer.resolve;
-          $window.document.body.appendChild(script);
+        if (mapsAPIPromise) {
+          return mapsAPIPromise;
         }
+        if (typeof $window.google === 'object' && typeof $window.google.maps === 'object') {
+          var defer = $q.defer();
+          defer.resolve();
+          return defer.promise;
+        }
+        var mapsDefer = $q.defer();
+        mapsAPIPromise = mapsDefer.promise;
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp&callback=googleMapsInitialized';
+        if (googleMapsAPIKey) {
+          script.src += '&key=' + googleMapsAPIKey;
+        }
+        $window.googleMapsInitialized = mapsDefer.resolve;
+        $window.document.body.appendChild(script);
         return mapsAPIPromise;
       }
   
