@@ -111,7 +111,7 @@ describe('ngGeolocator', function() {
             });
           });
 
-          describe('with map options extension object configured', function() {
+          describe('with map options extension function configured', function() {
             var testFunc;
             beforeEach(inject(function($injector) {
               provider.extendMapOptions(function(maps) {
